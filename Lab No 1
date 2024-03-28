@@ -1,0 +1,75 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+class Reservation {
+private:
+    string name;
+    string timeSlot;
+
+public:
+    Reservation(string _name, string _timeSlot) : name(_name), timeSlot(_timeSlot) {}
+
+    string getName() const {
+        return name;
+    }
+
+    string getTimeSlot() const {
+        return timeSlot;
+    }
+};
+
+class Restaurant {
+private:
+    vector<string> availableTimeSlots;
+    vector<Reservation> reservations;
+
+public:
+    // Constructor to initialize available time slots
+    Restaurant(vector<string> _availableTimeSlots) : availableTimeSlots(_availableTimeSlots) {}
+
+    // Method to display available time slots
+    void displayAvailableTimeSlots() const {
+        cout << "Available Time Slots:" << endl;
+        for (const string& slot : availableTimeSlots) {
+            cout << slot << endl;
+        }
+    }
+
+    // Method to accept reservation
+    bool acceptReservation(const string& name, const string& timeSlot) {
+        if (find(availableTimeSlots.begin(), availableTimeSlots.end(), timeSlot) != availableTimeSlots.end()) {
+            // Time slot is available, add reservation
+            reservations.push_back(Reservation(name, timeSlot));
+            // Remove reserved time slot from available slots
+            availableTimeSlots.erase(remove(availableTimeSlots.begin(), availableTimeSlots.end(), timeSlot), availableTimeSlots.end());
+            cout << "Reservation confirmed for " << name << " at " << timeSlot << endl;
+            return true;
+        } else {
+            cout << "Sorry, the selected time slot is not available." << endl;
+            return false;
+        }
+    }
+};
+
+int main() {
+    // Initialize a restaurant with some available time slots
+    vector<string> availableSlots = {"12:00 PM", "1:00 PM", "2:00 PM", "6:00 PM", "7:00 PM"};
+    Restaurant restaurant(availableSlots);
+
+    // Display available time slots
+    restaurant.displayAvailableTimeSlots();
+
+    // Accept reservations
+    restaurant.acceptReservation("John Doe", "1:00 PM");
+    restaurant.acceptReservation("Jane Smith", "6:00 PM");
+    restaurant.acceptReservation("Alice Johnson", "8:00 PM");
+
+    // Display updated available time slots after reservations
+    restaurant.displayAvailableTimeSlots();
+
+    return 0;
+}
